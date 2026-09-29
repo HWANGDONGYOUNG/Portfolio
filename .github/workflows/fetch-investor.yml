@@ -40,8 +40,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests python-dotenv
-          # 공개 PyPI에 nhplug가 없을 경우 SDK 저장소에서 직접 설치
-          pip install nhplug || pip install "git+https://github.com/PLUG-OpenAPI/nhplug-sdk"
+          # 로컬에서 검증된 버전(0.4.1)으로 고정. 필요시 버전만 올려서 재검증하세요.
+          # 혹시 설치가 안 되면(사설 인덱스 사용 등) SDK 저장소에서 직접 설치.
+          pip install "nhplug==0.4.1" || pip install "git+https://github.com/PLUG-OpenAPI/nhplug-sdk"
 
       - name: Run fetch script
         env:
@@ -61,7 +62,19 @@ jobs:
           git add nh_data_latest.json data/ 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경 없음 - 커밋 생략"
-          else
-            git commit -m "chore: update portfolio data ($(date -u +'%Y-%m-%dT%H:%M:%SZ'))"
-            git push
+            exit 0
           fi
+          git commit -m "chore: update portfolio data ($(date -u +'%Y-%m-%dT%H:%M:%SZ'))"
+          # 사용자가 같은 시점에 웹에서 다른 파일을 커밋하는 등으로 원격이
+          # 앞서 나가 push가 거부될 수 있어(non-fast-forward), rebase 후 재시도한다.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "push 실패(원격이 앞서 있음) - rebase 후 재시도 ($i/5)"
+            git fetch origin main
+            git rebase origin/main
+            sleep 5
+          done
+          echo "5회 재시도에도 push 실패"
+          exit 1
