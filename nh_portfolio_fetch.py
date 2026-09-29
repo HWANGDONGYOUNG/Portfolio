@@ -1,5 +1,5 @@
 """
-나무증권(NH투자증권) Namuh PLUG API로 보유 종목의 시세·투자자별 수급을 조회해
+나무증권(NH투자증권) Namuh PLUG API로 보유 종목 + 관심종목의 시세·투자자별 수급을 조회해
 같은 폴더에 JSON 파일로 저장하는 스크립트.
 
 - 조회만 합니다. 주문·계좌 API는 전혀 호출하지 않습니다.
@@ -12,6 +12,8 @@
 
 실행:  python nh_portfolio_fetch.py
 결과:  nh_data_latest.json (항상 최신본으로 덮어씀) + data\\nh_data_YYYYMMDD_HHMM.json (기록용)
+       - "stocks": 보유 종목 (평균단가 대비 손익 포함)
+       - "watchlist": 미보유 관심종목 (평균단가/손익 없음, 시세·수급만)
 """
 from __future__ import annotations
 
@@ -29,12 +31,18 @@ except ImportError:
     print("nhplug 패키지가 없습니다. 먼저 실행하세요:  pip install nhplug")
     sys.exit(1)
 
-# ── 조회 대상 (보유 종목이 바뀌면 여기만 고치세요) ─────────────────
+# ── 조회 대상 ────────────────────────────────────────────────
+# 보유 종목이 바뀌면 여기만 고치세요. avg(평균매입단가)가 있는 것만 손익(%)을 계산합니다.
 HOLDINGS = [
     {"name": "우리금융지주", "code": "316140", "qty": 300, "avg": 34300},
     {"name": "KT&G",        "code": "033780", "qty": 30,  "avg": 171266},
     {"name": "KB금융",      "code": "105560", "qty": 20,  "avg": 175406},
     {"name": "POSCO홀딩스", "code": "005490", "qty": 1,   "avg": 328511},
+]
+# 미보유 관심종목 (시세·수급만 확인, 손익 계산 없음)
+WATCHLIST = [
+    {"name": "삼성전자",   "code": "005930"},
+    {"name": "SK하이닉스", "code": "000660"},
 ]
 INVESTOR_DAYS = 10          # 투자자별 수급 조회 일수
 # 시세: UNT=KRX+NXT 통합, KRX=정규장 기준. 둘 다 저장해 비교할 수 있게 함.
@@ -138,38 +146,63 @@ def summarize_flow(days: list[dict]) -> dict:
     return {"with_today_provisional": agg(days), "confirmed_only": agg(confirmed)}
 
 
+def fetch_one(item: dict, now: datetime, errors: list[str]) -> dict:
+    """HOLDINGS/WATCHLIST 공통: 시세+투자자별 수급을 조회해 하나의 종목 레코드를 만든다."""
+    out = {**item, "price": {}, "investor": {}, "flow_summary": {}}
+    for m in PRICE_MARKETS:
+        try:
+            out["price"][m] = fetch_price(item["code"], m)
+        except NhplugError as e:
+            errors.append(f"{item['name']} 시세({m}): {e}")
+    try:
+        inv = fetch_investor(item["code"])
+        out["investor"] = inv
+        out["flow_summary"] = summarize_flow(inv["days"])
+    except NhplugError as e:
+        errors.append(f"{item['name']} 투자자별: {e}")
+
+    p = _num((out["price"].get("KRX") or out["price"].get("UNT") or {}).get("stck_prpr"))
+    if p:
+        # 보유 종목이면(avg 있음) 평균단가 대비 손익도 계산
+        avg = item.get("avg")
+        if avg:
+            out["pnl_pct_vs_avg"] = round((p / avg - 1) * 100, 2)
+        # 부호 있는 등락률: 직전 확정 거래일의 KRX 종가 대비
+        prev = next((d for d in out["investor"].get("days", []) if not d.get("provisional")), None)
+        pc = _num(prev.get("close")) if prev else None
+        if pc:
+            out["prev_close_krx"] = pc
+            out["chg_vs_prev_close"] = p - pc
+            out["chg_rate_vs_prev_close"] = round((p / pc - 1) * 100, 2)
+    return out
+
+
+def _print_line(item: dict):
+    pr = item["price"].get("KRX") or item["price"].get("UNT") or {}
+    fs = (item.get("flow_summary") or {}).get("with_today_provisional") or {}
+    rate = item.get("chg_rate_vs_prev_close")
+    rate_txt = f"{rate:+.2f}%" if rate is not None else "등락률 확인불가"
+    if fs:
+        print(f"- {item['name']}: {pr.get('stck_prpr')}원 ({rate_txt}) | "
+              f"외국인 연속순매도 {fs.get('foreign_sell_streak_days')}일, "
+              f"5일합 {fs.get('foreign_5d_sum'):+,.0f} / 기관 5일합 {fs.get('institution_5d_sum'):+,.0f} (오늘 잠정치 포함)")
+    else:
+        print(f"- {item['name']}: {pr.get('stck_prpr')}원 ({rate_txt}) | 수급 확인불가")
+
+
 def main() -> int:
     now = datetime.now()
     result = {
         "fetched_at": now.isoformat(timespec="seconds"),
         "source": "NH투자증권 Namuh PLUG OpenAPI",
         "stocks": [],
+        "watchlist": [],
         "errors": [],
     }
     for h in HOLDINGS:
-        item = {**h, "price": {}, "investor": {}, "flow_summary": {}}
-        for m in PRICE_MARKETS:
-            try:
-                item["price"][m] = fetch_price(h["code"], m)
-            except NhplugError as e:
-                result["errors"].append(f"{h['name']} 시세({m}): {e}")
-        try:
-            inv = fetch_investor(h["code"])
-            item["investor"] = inv
-            item["flow_summary"] = summarize_flow(inv["days"])
-        except NhplugError as e:
-            result["errors"].append(f"{h['name']} 투자자별: {e}")
-        p = _num((item["price"].get("KRX") or item["price"].get("UNT") or {}).get("stck_prpr"))
-        if p:
-            item["pnl_pct_vs_avg"] = round((p / h["avg"] - 1) * 100, 2)
-            # 부호 있는 등락률: 직전 확정 거래일의 KRX 종가 대비
-            prev = next((d for d in item["investor"].get("days", []) if not d.get("provisional")), None)
-            pc = _num(prev.get("close")) if prev else None
-            if pc:
-                item["prev_close_krx"] = pc
-                item["chg_vs_prev_close"] = p - pc
-                item["chg_rate_vs_prev_close"] = round((p / pc - 1) * 100, 2)
-        result["stocks"].append(item)
+        result["stocks"].append(fetch_one(h, now, result["errors"]))
+    for w in WATCHLIST:
+        result["watchlist"].append(fetch_one(w, now, result["errors"]))
 
     HIST_DIR.mkdir(exist_ok=True)
     text = json.dumps(result, ensure_ascii=False, indent=2)
@@ -178,15 +211,12 @@ def main() -> int:
 
     # 콘솔 요약
     print(f"[{result['fetched_at']}] 저장 완료: {OUT_DIR / 'nh_data_latest.json'}")
+    print("[보유 종목]")
     for s in result["stocks"]:
-        pr = s["price"].get("KRX") or s["price"].get("UNT") or {}
-        fs = (s.get("flow_summary") or {}).get("with_today_provisional") or {}
-        rate = s.get("chg_rate_vs_prev_close")
-        rate_txt = f"{rate:+.2f}%" if rate is not None else "등락률 확인불가"
-        print(f"- {s['name']}: {pr.get('stck_prpr')}원 ({rate_txt}) | "
-              f"외국인 연속순매도 {fs.get('foreign_sell_streak_days')}일, "
-              f"5일합 {fs.get('foreign_5d_sum'):+,.0f} / 기관 5일합 {fs.get('institution_5d_sum'):+,.0f} (오늘 잠정치 포함)"
-              if fs else f"- {s['name']}: {pr.get('stck_prpr')}원 ({rate_txt}) | 수급 확인불가")
+        _print_line(s)
+    print("[관심종목 - 미보유]")
+    for s in result["watchlist"]:
+        _print_line(s)
     for e in result["errors"]:
         print("! 오류:", e)
     return 1 if result["errors"] else 0
