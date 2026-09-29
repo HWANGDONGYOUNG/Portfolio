@@ -1,19 +1,17 @@
 name: NH Portfolio Fetch
 
 # 이 저장소 루트의 nh_portfolio_fetch.py 를 정해진 시각에 자동 실행해서
-# nh_data_latest.json 을 커밋합니다. Claude가 예약 브리핑 때 이 파일을
-# raw.githubusercontent.com 으로 읽어갑니다.
+# nh_data_latest.json 을 커밋합니다. 
 #
 # 시간대 주의: GitHub Actions cron은 UTC 기준이며, KST = UTC+9 입니다.
 #  - 평일 "아침" 브리핑용: KST 06:50 실행 -> 날짜가 하루 당겨져서
 #    UTC로는 "일~목 21:50"에 걸어야 KST 월~금 새벽이 됩니다.
 #  - 평일 "장마감" 브리핑용: KST 15:35 실행 -> 같은 날짜라
 #    UTC "월~금 06:35"에 걸면 됩니다.
-# 브리핑이 이 파일을 읽는 시각보다 5~10분 이상 여유를 두고 앞당겨 두세요.
 on:
   schedule:
-    - cron: '50 21 * * 0-4'   # KST 월~금 06:50 (아침 브리핑용)
-    - cron: '35 6 * * 1-5'    # KST 월~금 15:35 (장마감 브리핑용)
+    - cron: '50 21 * * 0-4'    # KST 월~금 06:50 (아침 브리핑용)
+    - cron: '35 6 * * 1-5'     # KST 월~금 15:35 (장마감 브리핑용)
   workflow_dispatch: {}        # 수동 실행 버튼(테스트용)
 
 permissions:
@@ -41,7 +39,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv
           # 로컬에서 검증된 버전(0.4.1)으로 고정. 필요시 버전만 올려서 재검증하세요.
-          # 혹시 설치가 안 되면(사설 인덱스 사용 등) SDK 저장소에서 직접 설치.
           pip install "nhplug==0.4.1" || pip install "git+https://github.com/PLUG-OpenAPI/nhplug-sdk"
 
       - name: Run fetch script
@@ -78,3 +75,18 @@ jobs:
           done
           echo "5회 재시도에도 push 실패"
           exit 1
+
+      - name: Send Email Briefing via Gmail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USER }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: 📊 [포트폴리오 브리핑] 최신 수급 및 시세 현황
+          to: ${{ secrets.GMAIL_USER }}
+          from: GitHub Actions
+          body: |
+            [GitHub Actions] 포트폴리오 자동 수집 및 업데이트가 완료되었습니다.
+            상세 데이터는 첨부된 nh_data_latest.json 파일을 확인해 주세요.
+          attachments: nh_data_latest.json
