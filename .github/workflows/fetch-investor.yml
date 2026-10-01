@@ -56,7 +56,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add nh_data_latest.json data/ 2>/dev/null || true
+          # 새롭게 생성되는 email_body.txt도 함께 커밋되도록 추가
+          git add nh_data_latest.json email_body.txt data/ 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경 없음 - 커밋 생략"
             exit 0
@@ -86,7 +87,5 @@ jobs:
           subject: 📊 [포트폴리오 브리핑] 최신 수급 및 시세 현황
           to: ${{ secrets.GMAIL_USER }}
           from: GitHub Actions
-          body: |
-            [GitHub Actions] 포트폴리오 자동 수집 및 업데이트가 완료되었습니다.
-            상세 데이터는 첨부된 nh_data_latest.json 파일을 확인해 주세요.
+          body: file://email_body.txt
           attachments: nh_data_latest.json
