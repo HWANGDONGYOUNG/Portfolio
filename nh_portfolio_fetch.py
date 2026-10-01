@@ -1,6 +1,6 @@
 """
 나무증권(NH투자증권) Namuh PLUG API로 보유 종목 + 관심종목의 시세·투자자별 수급을 조회해
-같은 폴더에 JSON 파일로 저장하는 스크립트.
+같은 폴더에 JSON 파일 및 이메일 본문용 TXT 파일로 저장하는 스크립트.
 
 - 조회만 합니다. 주문·계좌 API는 전혀 호출하지 않습니다.
 - App Key / Secret 은 이 스크립트나 이 폴더에 넣지 마세요.
@@ -11,9 +11,9 @@
 - POST /krstock/quote/v1/currentInvestor  주식현재가 투자자 (일자별 개인/외국인/기관 순매수)
 
 실행:  python nh_portfolio_fetch.py
-결과:  nh_data_latest.json (항상 최신본으로 덮어씀) + data\\nh_data_YYYYMMDD_HHMM.json (기록용)
-       - "stocks": 보유 종목 (평균단가 대비 손익 포함)
-       - "watchlist": 미보유 관심종목 (평균단가/손익 없음, 시세·수급만)
+결과:  nh_data_latest.json (항상 최신본으로 덮어씀)
+       email_body.txt (이메일 발송용 텍스트 요약본)
+       data\nh_data_YYYYMMDD_HHMM.json (기록용)
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ HOLDINGS = [
     {"name": "우리금융지주", "code": "316140", "qty": 300, "avg": 34300},
     {"name": "KT&G",        "code": "033780", "qty": 30,  "avg": 171266},
     {"name": "KB금융",      "code": "105560", "qty": 20,  "avg": 175406},
-    {"name": "대한항공",    "code": "003490", "qty": 1,   "avg": 31800},
+    {"name": "대한항공",    "code": "003490", "qty": 200, "avg": 31800},
 ]
 # 미보유 관심종목 (시세·수급만 확인, 손익 계산 없음)
 WATCHLIST = [
@@ -45,7 +45,6 @@ WATCHLIST = [
     {"name": "SK하이닉스", "code": "000660"},
 ]
 INVESTOR_DAYS = 10          # 투자자별 수급 조회 일수
-# 시세: UNT=KRX+NXT 통합, KRX=정규장 기준. 둘 다 저장해 비교할 수 있게 함.
 PRICE_MARKETS = ["UNT", "KRX"]
 INVESTOR_MARKET = "KRX"     # 거래소 투자자별 집계 기준
 
@@ -57,18 +56,14 @@ PRICE_FIELDS = [
     "stck_oprc", "stck_hgpr", "stck_lwpr", "acml_vol", "acml_tr_pbmn", "hoga_bsop_hour",
 ]
 
-
 def _num(v):
     try:
         return float(str(v).replace(",", ""))
     except (TypeError, ValueError):
         return None
 
-
 def _block(data, key="Output_0"):
-    """응답 블록은 데이터가 있을 때만 내려온다(명세). 없으면 None."""
     return data.get(key) if isinstance(data, dict) else None
-
 
 def fetch_price(code: str, market: str) -> dict:
     data = call("/krstock/quote/v1/currentPrice", {"iem_cd": code, "market_cd": market})
@@ -80,7 +75,6 @@ def fetch_price(code: str, market: str) -> dict:
         "rsp_msg": msg,
         **{k: out.get(k) for k in PRICE_FIELDS if k in out},
     }
-
 
 def fetch_investor(code: str) -> dict:
     data = call(
@@ -96,31 +90,25 @@ def fetch_investor(code: str) -> dict:
     for r in rows:
         days.append({
             "date": r.get("bsop_date1"),
-            "provisional": r.get("bsop_date1") == today,   # 오늘 행 = 장중 잠정치(천 주 단위 반올림)
+            "provisional": r.get("bsop_date1") == today,
             "close": r.get("stck_prpr"),
-            "chg_rate_abs": r.get("prdy_ctrt"),            # API 가 부호 없이 내려줌
+            "chg_rate_abs": r.get("prdy_ctrt"),
             "volume": r.get("acml_vol"),
-            # 실측 검증(2026-09-29): invest 가 거래소 공식 외국인 순매수와 일치 → 기본값으로 사용
             "foreign_net": r.get("invest"),
-            # frgn_ntby_qty 는 공식치와 다름(당일은 0). 참고용으로만 보관
             "foreign_net_alt": r.get("frgn_ntby_qty"),
             "institution_net": r.get("gigwan"),
             "individual_net": r.get("person"),
             "program_net": r.get("program"),
             "foreign_ratio": r.get("for_rate"),
         })
-    days.sort(key=lambda d: d.get("date") or "", reverse=True)   # 최신일 먼저
-    # 등락 부호가 비어 오므로 전일 종가와 비교해 부호 있는 등락률을 직접 계산
+    days.sort(key=lambda d: d.get("date") or "", reverse=True)
     for i, d in enumerate(days[:-1]):
         c, pc = _num(d.get("close")), _num(days[i + 1].get("close"))
         if c and pc:
             d["chg_rate"] = round((c / pc - 1) * 100, 2)
     return {"market": INVESTOR_MARKET, "rsp_cd": cd, "rsp_msg": msg, "days": days}
 
-
 def summarize_flow(days: list[dict]) -> dict:
-    """매도신호 1·2번 점검용 집계. 해석(신호 판정)은 하지 않고 숫자만 만든다.
-    오늘(잠정치) 포함 집계와 확정치만 쓴 집계를 둘 다 만든다."""
     def agg(rows):
         vals = [(d.get("date"), _num(d.get("foreign_net")), _num(d.get("institution_net"))) for d in rows]
         vals = [v for v in vals if v[1] is not None]
@@ -134,20 +122,18 @@ def summarize_flow(days: list[dict]) -> dict:
                 break
         last5, prev5 = vals[:5], vals[5:10]
         return {
-            "from_date": last5[-1][0],
-            "to_date": vals[0][0],
+            "from_date": last5[-1][0] if last5 else None,
+            "to_date": vals[0][0] if vals else None,
             "foreign_sell_streak_days": streak,
             "foreign_5d_sum": sum(v[1] for v in last5),
             "foreign_prev5d_sum": sum(v[1] for v in prev5) if len(prev5) == 5 else None,
             "institution_5d_sum": sum(v[2] for v in last5 if v[2] is not None),
-            "both_selling_latest": vals[0][1] < 0 and (vals[0][2] or 0) < 0,
+            "both_selling_latest": vals[0][1] < 0 and (vals[0][2] or 0) < 0 if vals else False,
         }
     confirmed = [d for d in days if not d.get("provisional")]
     return {"with_today_provisional": agg(days), "confirmed_only": agg(confirmed)}
 
-
 def fetch_one(item: dict, now: datetime, errors: list[str]) -> dict:
-    """HOLDINGS/WATCHLIST 공통: 시세+투자자별 수급을 조회해 하나의 종목 레코드를 만든다."""
     out = {**item, "price": {}, "investor": {}, "flow_summary": {}}
     for m in PRICE_MARKETS:
         try:
@@ -163,11 +149,9 @@ def fetch_one(item: dict, now: datetime, errors: list[str]) -> dict:
 
     p = _num((out["price"].get("KRX") or out["price"].get("UNT") or {}).get("stck_prpr"))
     if p:
-        # 보유 종목이면(avg 있음) 평균단가 대비 손익도 계산
         avg = item.get("avg")
         if avg:
             out["pnl_pct_vs_avg"] = round((p / avg - 1) * 100, 2)
-        # 부호 있는 등락률: 직전 확정 거래일의 KRX 종가 대비
         prev = next((d for d in out["investor"].get("days", []) if not d.get("provisional")), None)
         pc = _num(prev.get("close")) if prev else None
         if pc:
@@ -176,6 +160,48 @@ def fetch_one(item: dict, now: datetime, errors: list[str]) -> dict:
             out["chg_rate_vs_prev_close"] = round((p / pc - 1) * 100, 2)
     return out
 
+def create_summary_text(data: dict) -> str:
+    """JSON 데이터를 읽기 쉬운 이메일 본문(텍스트) 형태로 변환합니다."""
+    lines = ["[포트폴리오 장 마감 자동 요약 데이터]\n"]
+    
+    lines.append("■ 보유 종목")
+    for stock in data.get("stocks", []):
+        name = stock.get("name", "N/A")
+        price_info = stock.get("price", {}).get("KRX") or stock.get("price", {}).get("UNT") or {}
+        close_price = int(price_info.get("stck_prpr") or 0)
+        chg_rate = stock.get("chg_rate_vs_prev_close")
+        chg_rate_str = f"{chg_rate:+.2f}%" if chg_rate is not None else "확인불가"
+
+        today_investor = stock.get("investor", {}).get("days", [{}])[0]
+        f_net = int(today_investor.get("foreign_net") or 0)
+        i_net = int(today_investor.get("institution_net") or 0)
+
+        flow = stock.get("flow_summary", {}).get("with_today_provisional", {})
+        f_5d = int(flow.get("foreign_5d_sum") or 0)
+        i_5d = int(flow.get("institution_5d_sum") or 0)
+
+        lines.append(f"- {name}: {close_price:,}원 ({chg_rate_str})")
+        lines.append(f"  당일수급: 외인 {f_net:,} / 기관 {i_net:,}")
+        lines.append(f"  5일누적: 외인 {f_5d:,} / 기관 {i_5d:,}\n")
+
+    lines.append("■ 관심 종목 (미보유)")
+    for stock in data.get("watchlist", []):
+        name = stock.get("name", "N/A")
+        price_info = stock.get("price", {}).get("KRX") or stock.get("price", {}).get("UNT") or {}
+        close_price = int(price_info.get("stck_prpr") or 0)
+        chg_rate = stock.get("chg_rate_vs_prev_close")
+        chg_rate_str = f"{chg_rate:+.2f}%" if chg_rate is not None else "확인불가"
+
+        today_investor = stock.get("investor", {}).get("days", [{}])[0]
+        f_net = int(today_investor.get("foreign_net") or 0)
+
+        flow = stock.get("flow_summary", {}).get("with_today_provisional", {})
+        f_5d = int(flow.get("foreign_5d_sum") or 0)
+
+        lines.append(f"- {name}: {close_price:,}원 ({chg_rate_str})")
+        lines.append(f"  당일수급: 외인 {f_net:,} / 5일누적: {f_5d:,}\n")
+
+    return "\n".join(lines)
 
 def _print_line(item: dict):
     pr = item["price"].get("KRX") or item["price"].get("UNT") or {}
@@ -188,7 +214,6 @@ def _print_line(item: dict):
               f"5일합 {fs.get('foreign_5d_sum'):+,.0f} / 기관 5일합 {fs.get('institution_5d_sum'):+,.0f} (오늘 잠정치 포함)")
     else:
         print(f"- {item['name']}: {pr.get('stck_prpr')}원 ({rate_txt}) | 수급 확인불가")
-
 
 def main() -> int:
     now = datetime.now()
@@ -205,12 +230,19 @@ def main() -> int:
         result["watchlist"].append(fetch_one(w, now, result["errors"]))
 
     HIST_DIR.mkdir(exist_ok=True)
+    
+    # 1. JSON 파일 저장
     text = json.dumps(result, ensure_ascii=False, indent=2)
     (OUT_DIR / "nh_data_latest.json").write_text(text, encoding="utf-8")
     (HIST_DIR / f"nh_data_{now:%Y%m%d_%H%M}.json").write_text(text, encoding="utf-8")
+    
+    # 2. 이메일 본문 텍스트 파일 저장 (신규 추가)
+    email_text = create_summary_text(result)
+    (OUT_DIR / "email_body.txt").write_text(email_text, encoding="utf-8")
 
     # 콘솔 요약
-    print(f"[{result['fetched_at']}] 저장 완료: {OUT_DIR / 'nh_data_latest.json'}")
+    print(f"[{result['fetched_at']}] 데이터 저장 완료: {OUT_DIR / 'nh_data_latest.json'}")
+    print(f"[{result['fetched_at']}] 이메일 텍스트 완료: {OUT_DIR / 'email_body.txt'}")
     print("[보유 종목]")
     for s in result["stocks"]:
         _print_line(s)
@@ -220,7 +252,6 @@ def main() -> int:
     for e in result["errors"]:
         print("! 오류:", e)
     return 1 if result["errors"] else 0
-
 
 if __name__ == "__main__":
     try:
