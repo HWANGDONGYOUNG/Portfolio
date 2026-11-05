@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-04T14:50:22",
+  "fetched_at": "2026-11-05T01:49:47",
   "source": "NH투자증권 Namuh PLUG OpenAPI",
   "stocks": [
     {
@@ -13,32 +13,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*LS ELECTRIC",
-          "stck_prpr": 153700,
+          "stck_prpr": 134100,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 2200,
-          "prdy_ctrt": 1.45,
-          "stck_oprc": 156400,
-          "stck_hgpr": 158600,
-          "stck_lwpr": 143900,
-          "acml_vol": 1312787,
-          "acml_tr_pbmn": 196870,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 16600,
+          "prdy_ctrt": 11.02,
+          "stck_oprc": 150700,
+          "stck_hgpr": 150700,
+          "stck_lwpr": 132400,
+          "acml_vol": 703940,
+          "acml_tr_pbmn": 97587,
+          "hoga_bsop_hour": "10:49:52"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*LS ELECTRIC",
-          "stck_prpr": 153600,
+          "stck_prpr": 134000,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 2100,
-          "prdy_ctrt": 1.39,
-          "stck_oprc": 154900,
-          "stck_hgpr": 158600,
-          "stck_lwpr": 143900,
-          "acml_vol": 974848,
-          "acml_tr_pbmn": 145742,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 16700,
+          "prdy_ctrt": 11.08,
+          "stck_oprc": 145500,
+          "stck_hgpr": 145600,
+          "stck_lwpr": 132400,
+          "acml_vol": 435384,
+          "acml_tr_pbmn": 59870,
+          "hoga_bsop_hour": "10:49:53"
         }
       },
       "investor": {
@@ -47,8 +47,22 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 134000,
+            "chg_rate_abs": 11.08,
+            "volume": 435411,
+            "foreign_net": -121000,
+            "foreign_net_alt": 0,
+            "institution_net": -11000,
+            "individual_net": 0,
+            "program_net": -99695,
+            "foreign_ratio": 18.54,
+            "chg_rate": -12.76
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 153600,
             "chg_rate_abs": 1.39,
             "volume": 974848,
@@ -189,6 +203,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 3,
+          "foreign_5d_sum": -308590.0,
+          "foreign_prev5d_sum": 54774.0,
+          "institution_5d_sum": 117882.0,
+          "both_selling_latest": true
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 2,
@@ -196,21 +219,12 @@
           "foreign_prev5d_sum": 17247.0,
           "institution_5d_sum": 127351.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 1,
-          "foreign_5d_sum": -19587.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": 107761.0,
-          "both_selling_latest": true
         }
       },
-      "pnl_pct_vs_avg": -7.58,
-      "prev_close_krx": 153300.0,
-      "chg_vs_prev_close": 300.0,
-      "chg_rate_vs_prev_close": 0.2
+      "pnl_pct_vs_avg": -19.38,
+      "prev_close_krx": 153600.0,
+      "chg_vs_prev_close": -19600.0,
+      "chg_rate_vs_prev_close": -12.76
     },
     {
       "name": "KT&G",
@@ -223,32 +237,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*KT&G",
-          "stck_prpr": 194100,
+          "stck_prpr": 199100,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 1400,
-          "prdy_ctrt": 0.73,
-          "stck_oprc": 192700,
-          "stck_hgpr": 196400,
-          "stck_lwpr": 191100,
-          "acml_vol": 306477,
-          "acml_tr_pbmn": 59126,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 7100,
+          "prdy_ctrt": 3.7,
+          "stck_oprc": 194500,
+          "stck_hgpr": 201000,
+          "stck_lwpr": 193500,
+          "acml_vol": 114585,
+          "acml_tr_pbmn": 22747,
+          "hoga_bsop_hour": "10:49:54"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*KT&G",
-          "stck_prpr": 194100,
+          "stck_prpr": 199200,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 1400,
-          "prdy_ctrt": 0.73,
-          "stck_oprc": 191100,
-          "stck_hgpr": 196400,
-          "stck_lwpr": 191100,
-          "acml_vol": 276420,
-          "acml_tr_pbmn": 53304,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 7200,
+          "prdy_ctrt": 3.75,
+          "stck_oprc": 195800,
+          "stck_hgpr": 201000,
+          "stck_lwpr": 193500,
+          "acml_vol": 82536,
+          "acml_tr_pbmn": 16401,
+          "hoga_bsop_hour": "10:49:55"
         }
       },
       "investor": {
@@ -257,8 +271,22 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 199200,
+            "chg_rate_abs": 3.75,
+            "volume": 82536,
+            "foreign_net": 17000,
+            "foreign_net_alt": 0,
+            "institution_net": 2000,
+            "individual_net": 0,
+            "program_net": 21523,
+            "foreign_ratio": 50.78,
+            "chg_rate": 2.63
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 194100,
             "chg_rate_abs": 0.73,
             "volume": 276420,
@@ -399,6 +427,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 0,
+          "foreign_5d_sum": -103744.0,
+          "foreign_prev5d_sum": -99581.0,
+          "institution_5d_sum": 169000.0,
+          "both_selling_latest": false
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 2,
@@ -406,21 +443,12 @@
           "foreign_prev5d_sum": -113000.0,
           "institution_5d_sum": 120042.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 1,
-          "foreign_5d_sum": -107643.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": 53362.0,
-          "both_selling_latest": false
         }
       },
-      "pnl_pct_vs_avg": 13.33,
-      "prev_close_krx": 192700.0,
-      "chg_vs_prev_close": 1400.0,
-      "chg_rate_vs_prev_close": 0.73
+      "pnl_pct_vs_avg": 16.31,
+      "prev_close_krx": 194100.0,
+      "chg_vs_prev_close": 5100.0,
+      "chg_rate_vs_prev_close": 2.63
     },
     {
       "name": "KB금융",
@@ -433,32 +461,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*KB금융",
-          "stck_prpr": 154700,
+          "stck_prpr": 157900,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 3300,
-          "prdy_ctrt": 2.18,
-          "stck_oprc": 152700,
-          "stck_hgpr": 154800,
-          "stck_lwpr": 149700,
-          "acml_vol": 992851,
-          "acml_tr_pbmn": 150707,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 6400,
+          "prdy_ctrt": 4.22,
+          "stck_oprc": 154000,
+          "stck_hgpr": 160500,
+          "stck_lwpr": 154000,
+          "acml_vol": 455413,
+          "acml_tr_pbmn": 72173,
+          "hoga_bsop_hour": "10:49:58"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*KB금융",
-          "stck_prpr": 154700,
+          "stck_prpr": 157900,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 3300,
-          "prdy_ctrt": 2.18,
-          "stck_oprc": 152500,
-          "stck_hgpr": 154700,
-          "stck_lwpr": 149700,
-          "acml_vol": 904694,
-          "acml_tr_pbmn": 137268,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 6400,
+          "prdy_ctrt": 4.22,
+          "stck_oprc": 156700,
+          "stck_hgpr": 160500,
+          "stck_lwpr": 156000,
+          "acml_vol": 367677,
+          "acml_tr_pbmn": 58324,
+          "hoga_bsop_hour": "10:49:58"
         }
       },
       "investor": {
@@ -467,8 +495,22 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 157900,
+            "chg_rate_abs": 4.22,
+            "volume": 367677,
+            "foreign_net": 28000,
+            "foreign_net_alt": 0,
+            "institution_net": 8000,
+            "individual_net": 0,
+            "program_net": -5678,
+            "foreign_ratio": 78.12,
+            "chg_rate": 2.07
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 154700,
             "chg_rate_abs": 2.18,
             "volume": 904694,
@@ -609,6 +651,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 0,
+          "foreign_5d_sum": -372221.0,
+          "foreign_prev5d_sum": 157496.0,
+          "institution_5d_sum": 390996.0,
+          "both_selling_latest": false
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 4,
@@ -616,21 +667,12 @@
           "foreign_prev5d_sum": 58032.0,
           "institution_5d_sum": 354410.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 3,
-          "foreign_5d_sum": -66485.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": 175105.0,
-          "both_selling_latest": false
         }
       },
-      "pnl_pct_vs_avg": -10.19,
-      "prev_close_krx": 152000.0,
-      "chg_vs_prev_close": 2700.0,
-      "chg_rate_vs_prev_close": 1.78
+      "pnl_pct_vs_avg": -8.33,
+      "prev_close_krx": 154700.0,
+      "chg_vs_prev_close": 3200.0,
+      "chg_rate_vs_prev_close": 2.07
     },
     {
       "name": "삼성전자",
@@ -643,32 +685,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*삼성전자",
-          "stck_prpr": 221500,
+          "stck_prpr": 205500,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 2000,
-          "prdy_ctrt": 0.91,
-          "stck_oprc": 225500,
-          "stck_hgpr": 228000,
-          "stck_lwpr": 208000,
-          "acml_vol": 34924357,
-          "acml_tr_pbmn": 7564327,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 12500,
+          "prdy_ctrt": 5.73,
+          "stck_oprc": 211500,
+          "stck_hgpr": 214000,
+          "stck_lwpr": 202500,
+          "acml_vol": 15256241,
+          "acml_tr_pbmn": 3169168,
+          "hoga_bsop_hour": "10:50:01"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*삼성전자",
-          "stck_prpr": 221500,
+          "stck_prpr": 205500,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 2000,
-          "prdy_ctrt": 0.91,
-          "stck_oprc": 226500,
-          "stck_hgpr": 228000,
-          "stck_lwpr": 208000,
-          "acml_vol": 22248738,
-          "acml_tr_pbmn": 4802353,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 12500,
+          "prdy_ctrt": 5.73,
+          "stck_oprc": 213000,
+          "stck_hgpr": 213500,
+          "stck_lwpr": 202500,
+          "acml_vol": 8773384,
+          "acml_tr_pbmn": 1816495,
+          "hoga_bsop_hour": "10:50:02"
         }
       },
       "investor": {
@@ -677,13 +719,27 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 205500,
+            "chg_rate_abs": 5.73,
+            "volume": 8773638,
+            "foreign_net": -1844000,
+            "foreign_net_alt": 0,
+            "institution_net": 127000,
+            "individual_net": 0,
+            "program_net": -1244307,
+            "foreign_ratio": 46.06,
+            "chg_rate": -7.22
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 221500,
             "chg_rate_abs": 0.91,
             "volume": 22248738,
             "foreign_net": -3776469,
-            "foreign_net_alt": -4514652,
+            "foreign_net_alt": -4519938,
             "institution_net": 770856,
             "individual_net": 3260043,
             "program_net": -2170948,
@@ -819,6 +875,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 3,
+          "foreign_5d_sum": -7124862.0,
+          "foreign_prev5d_sum": 207412.0,
+          "institution_5d_sum": 3215820.0,
+          "both_selling_latest": false
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 2,
@@ -826,21 +891,12 @@
           "foreign_prev5d_sum": 141126.0,
           "institution_5d_sum": 3334500.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 1,
-          "foreign_5d_sum": -496374.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": 4183824.0,
-          "both_selling_latest": true
         }
       },
-      "pnl_pct_vs_avg": 0.57,
-      "prev_close_krx": 222000.0,
-      "chg_vs_prev_close": -500.0,
-      "chg_rate_vs_prev_close": -0.23
+      "pnl_pct_vs_avg": -6.69,
+      "prev_close_krx": 221500.0,
+      "chg_vs_prev_close": -16000.0,
+      "chg_rate_vs_prev_close": -7.22
     },
     {
       "name": "삼성중공업",
@@ -853,32 +909,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*삼성중공업",
-          "stck_prpr": 17700,
+          "stck_prpr": 16870,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 420,
-          "prdy_ctrt": 2.43,
-          "stck_oprc": 17480,
-          "stck_hgpr": 18050,
-          "stck_lwpr": 16790,
-          "acml_vol": 7779544,
-          "acml_tr_pbmn": 135019,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 590,
+          "prdy_ctrt": 3.38,
+          "stck_oprc": 17730,
+          "stck_hgpr": 17850,
+          "stck_lwpr": 16800,
+          "acml_vol": 1991851,
+          "acml_tr_pbmn": 34505,
+          "hoga_bsop_hour": "10:50:03"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*삼성중공업",
-          "stck_prpr": 17700,
+          "stck_prpr": 16870,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 420,
-          "prdy_ctrt": 2.43,
-          "stck_oprc": 17120,
-          "stck_hgpr": 18050,
-          "stck_lwpr": 16790,
-          "acml_vol": 4946405,
-          "acml_tr_pbmn": 85786,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 590,
+          "prdy_ctrt": 3.38,
+          "stck_oprc": 17530,
+          "stck_hgpr": 17790,
+          "stck_lwpr": 16800,
+          "acml_vol": 1147007,
+          "acml_tr_pbmn": 19798,
+          "hoga_bsop_hour": "10:50:04"
         }
       },
       "investor": {
@@ -887,8 +943,22 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 16870,
+            "chg_rate_abs": 3.38,
+            "volume": 1147017,
+            "foreign_net": -9000,
+            "foreign_net_alt": 0,
+            "institution_net": 3000,
+            "individual_net": 0,
+            "program_net": -54414,
+            "foreign_ratio": 28.3,
+            "chg_rate": -4.69
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 17700,
             "chg_rate_abs": 2.43,
             "volume": 4946405,
@@ -1029,6 +1099,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 1,
+          "foreign_5d_sum": 1095580.0,
+          "foreign_prev5d_sum": 1928980.0,
+          "institution_5d_sum": 2031694.0,
+          "both_selling_latest": false
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 0,
@@ -1036,21 +1115,12 @@
           "foreign_prev5d_sum": 1553710.0,
           "institution_5d_sum": 1343503.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 0,
-          "foreign_5d_sum": 1737456.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": 866086.0,
-          "both_selling_latest": false
         }
       },
-      "pnl_pct_vs_avg": -2.26,
-      "prev_close_krx": 17380.0,
-      "chg_vs_prev_close": 320.0,
-      "chg_rate_vs_prev_close": 1.84
+      "pnl_pct_vs_avg": -6.85,
+      "prev_close_krx": 17700.0,
+      "chg_vs_prev_close": -830.0,
+      "chg_rate_vs_prev_close": -4.69
     }
   ],
   "watchlist": [
@@ -1063,32 +1133,32 @@
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*SK하이닉스",
-          "stck_prpr": 1420000,
+          "stck_prpr": 1291000,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 22000,
-          "prdy_ctrt": 1.57,
-          "stck_oprc": 1436000,
-          "stck_hgpr": 1476000,
-          "stck_lwpr": 1303000,
-          "acml_vol": 7042274,
-          "acml_tr_pbmn": 9704466,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 105000,
+          "prdy_ctrt": 7.52,
+          "stck_oprc": 1381000,
+          "stck_hgpr": 1381000,
+          "stck_lwpr": 1261000,
+          "acml_vol": 2740812,
+          "acml_tr_pbmn": 3569677,
+          "hoga_bsop_hour": "10:50:07"
         },
         "KRX": {
           "market": "KRX",
           "rsp_cd": "00000",
           "rsp_msg": "조회가 완료되었습니다.",
           "iem_nm": "*SK하이닉스",
-          "stck_prpr": 1420000,
+          "stck_prpr": 1293000,
           "prdy_vrss_sign": "",
-          "prdy_vrss": 22000,
-          "prdy_ctrt": 1.57,
-          "stck_oprc": 1458000,
-          "stck_hgpr": 1476000,
-          "stck_lwpr": 1303000,
-          "acml_vol": 4591188,
-          "acml_tr_pbmn": 6297032,
-          "hoga_bsop_hour": "20:00:00"
+          "prdy_vrss": 103000,
+          "prdy_ctrt": 7.38,
+          "stck_oprc": 1320000,
+          "stck_hgpr": 1320000,
+          "stck_lwpr": 1261000,
+          "acml_vol": 1402200,
+          "acml_tr_pbmn": 1814505,
+          "hoga_bsop_hour": "10:50:08"
         }
       },
       "investor": {
@@ -1097,13 +1167,27 @@
         "rsp_msg": "조회가 완료되었습니다.",
         "days": [
           {
-            "date": "20261104",
+            "date": "20261105",
             "provisional": true,
+            "close": 1292000,
+            "chg_rate_abs": 7.45,
+            "volume": 1402254,
+            "foreign_net": -259000,
+            "foreign_net_alt": 0,
+            "institution_net": 52000,
+            "individual_net": 0,
+            "program_net": -283275,
+            "foreign_ratio": 48.46,
+            "chg_rate": -9.01
+          },
+          {
+            "date": "20261104",
+            "provisional": false,
             "close": 1420000,
             "chg_rate_abs": 1.57,
             "volume": 4591188,
             "foreign_net": -837394,
-            "foreign_net_alt": -903452,
+            "foreign_net_alt": -908540,
             "institution_net": 197941,
             "individual_net": 372428,
             "program_net": -647553,
@@ -1239,6 +1323,15 @@
       },
       "flow_summary": {
         "with_today_provisional": {
+          "from_date": "20261030",
+          "to_date": "20261105",
+          "foreign_sell_streak_days": 5,
+          "foreign_5d_sum": -2011533.0,
+          "foreign_prev5d_sum": -276382.0,
+          "institution_5d_sum": 97683.0,
+          "both_selling_latest": false
+        },
+        "confirmed_only": {
           "from_date": "20261029",
           "to_date": "20261104",
           "foreign_sell_streak_days": 4,
@@ -1246,20 +1339,11 @@
           "foreign_prev5d_sum": -548296.0,
           "institution_5d_sum": -121425.0,
           "both_selling_latest": false
-        },
-        "confirmed_only": {
-          "from_date": "20261028",
-          "to_date": "20261103",
-          "foreign_sell_streak_days": 3,
-          "foreign_5d_sum": -359467.0,
-          "foreign_prev5d_sum": null,
-          "institution_5d_sum": -169981.0,
-          "both_selling_latest": true
         }
       },
-      "prev_close_krx": 1414000.0,
-      "chg_vs_prev_close": 6000.0,
-      "chg_rate_vs_prev_close": 0.42
+      "prev_close_krx": 1420000.0,
+      "chg_vs_prev_close": -127000.0,
+      "chg_rate_vs_prev_close": -8.94
     }
   ],
   "errors": []
